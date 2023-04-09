@@ -16,7 +16,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Slf4j
