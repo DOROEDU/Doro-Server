@@ -1,6 +1,6 @@
 package com.example.DoroServer.domain.notification.service;
 
-import com.example.DoroServer.domain.notification.entity.FCMMessage;
+import com.example.DoroServer.domain.notification.dto.FCMMessageRes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -89,21 +89,21 @@ public class FCMService {
      * @return 생성된 FCM 메시지를 JSON 문자열로 반환
      */
     private String makeMessage(String targetToken, String title, String body) {
-        FCMMessage fcmMessage =
-                FCMMessage.builder()
+        FCMMessageRes fcmMessage =
+                FCMMessageRes.builder()
                         .message(
-                                FCMMessage.Message.builder()
+                                FCMMessageRes.Message.builder()
                                         .token(targetToken)
                                         .notification(
-                                                FCMMessage.Notification.builder()
+                                                FCMMessageRes.Notification.builder()
                                                         .title(title)
                                                         .body(body)
                                                         .build())
                                         .apns(
-                                                FCMMessage.Apns.builder()
+                                                FCMMessageRes.Apns.builder()
                                                         .payload(
-                                                                FCMMessage.Payload.builder()
-                                                                        .aps(FCMMessage.Aps.builder()
+                                                                FCMMessageRes.Payload.builder()
+                                                                        .aps(FCMMessageRes.Aps.builder()
                                                                                 .sound("default")
                                                                                 .build())
                                                                         .build())

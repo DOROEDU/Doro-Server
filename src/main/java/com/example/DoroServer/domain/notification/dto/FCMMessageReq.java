@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FCMMessageDto {
+public class FCMMessageReq {
     private String targetToken;
     private String title;
     private String body;

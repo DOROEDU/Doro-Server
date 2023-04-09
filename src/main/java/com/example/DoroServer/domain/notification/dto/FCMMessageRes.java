@@ -1,4 +1,4 @@
-package com.example.DoroServer.domain.notification.entity;
+package com.example.DoroServer.domain.notification.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 @Getter
-public class FCMMessage {
+public class FCMMessageRes {
 
     private boolean validateOnly;
     private Message message;

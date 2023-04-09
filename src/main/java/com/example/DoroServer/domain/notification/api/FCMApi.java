@@ -1,6 +1,6 @@
 package com.example.DoroServer.domain.notification.api;
 
-import com.example.DoroServer.domain.notification.dto.FCMMessageDto;
+import com.example.DoroServer.domain.notification.dto.FCMMessageReq;
 import com.example.DoroServer.domain.notification.service.FCMService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +17,9 @@ public class FCMApi {
 
     private final FCMService fcmService;
 
-    // FCM 서버에 알림 전송요청 [targetToken, title, body]를 인자로 보내야 함.
+    // FCM 서버에 알림 전송요청
     @PostMapping("/api/fcm")
-    public ResponseEntity pushMessage(@RequestBody FCMMessageDto dto) {
+    public ResponseEntity pushMessage(@RequestBody FCMMessageReq dto) {
         try {
             // FCM 서버에 메시지 전송
             fcmService.sendMessageTo(
