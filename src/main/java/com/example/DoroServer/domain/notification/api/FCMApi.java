@@ -5,6 +5,7 @@ import com.example.DoroServer.domain.notification.service.FCMService;
 import com.example.DoroServer.global.common.BaseResponse;
 import com.example.DoroServer.global.common.ErrorResponse;
 import com.example.DoroServer.global.common.SuccessResponse;
+import com.example.DoroServer.global.exception.BaseException;
 import com.example.DoroServer.global.exception.Code;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class FCMApi {
     private final FCMService fcmService;
 
     // FCM 서버에 알림 전송요청
-    @PostMapping("/api/fcm")
+    @PostMapping("/notification")
     public BaseResponse pushMessage(@RequestBody FCMMessageReq dto) {
         try {
             // FCM 서버에 메시지 전송
@@ -32,13 +33,13 @@ public class FCMApi {
                     dto.getBody());       // 메시지의 내용
 
             // 성공적으로 메시지를 전송한 경우 200 OK 응답 반환
-            return SuccessResponse.successResponse(Code.SUCCESS);
+            return SuccessResponse.successResponse("Code.SUCCESS");
         } catch (IOException e) {
             log.info("error = ",e);
 
             //요청 실패 시 400 Bad Request 응답 반환
             // todo: 해당 에러에 어울리는 ErrorResponse 객체 생성 후 반환
-            return ErrorResponse.errorResponse(Code.EXAMPLE_ERROR);
+             throw new BaseException(Code.NOTI001);
         }
     }
 }

@@ -13,12 +13,15 @@ public enum Code {
     SUCCESS(OK,"SUCCESS","OK"),
     //오류 등록 예시 (HTTP_STATUS,ERROR_CODE,MESSAGE)
     EXAMPLE_ERROR(BAD_REQUEST,"EX001","예외 코드 예시입니다."),
-    EXAMPLE_ERROR2(REQUEST_TIMEOUT,"EX002","2번째 예외 코드 예시입니다.");
+    EXAMPLE_ERROR2(REQUEST_TIMEOUT,"EX002","2번째 예외 코드 예시입니다."),
     // 인증 관련 오류 AUTH001,AUTH002...
 
-    //USER 관련 오류 U001,U002...
+    // USER 관련 오류 U001,U002...
 
-    //강의 관련 오류 L001,L002..
+    // 강의 관련 오류 L001,L002..
+
+    // 알림 관련 오류 NOTI001,NOTI002
+    NOTI001(BAD_REQUEST, "PUSH_FAIL", "알림 전송에 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
