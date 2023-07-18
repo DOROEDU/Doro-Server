@@ -19,5 +19,4 @@ public class UpdateLectureContentReq {
 
     private String requirement; // 강의 자격 요건
 
-    private String content;
 }

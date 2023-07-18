@@ -20,8 +20,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class LectureContentDto {
 
-    private Long id;
-
     @NotBlank
     private String kit; // 강의 사용 키트
 
@@ -34,10 +32,7 @@ public class LectureContentDto {
     @NotNull
     private String requirement; // 강의 자격 요건
 
-    @NotNull
-    private String content;
-
-
+    private Long id;
 
 
 

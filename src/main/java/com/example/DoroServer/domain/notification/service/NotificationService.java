@@ -3,6 +3,7 @@ package com.example.DoroServer.domain.notification.service;
 import com.example.DoroServer.domain.notification.dto.NotificationContentReq;
 import com.example.DoroServer.domain.notification.dto.NotificationDto.Apns;
 import com.example.DoroServer.domain.notification.dto.NotificationDto.Aps;
+import com.example.DoroServer.domain.notification.dto.NotificationDto.Data;
 import com.example.DoroServer.domain.notification.dto.NotificationDto.Message;
 import com.example.DoroServer.domain.notification.dto.NotificationDto.Payload;
 import com.example.DoroServer.domain.notification.dto.NotificationRes;
@@ -11,6 +12,7 @@ import com.example.DoroServer.domain.notification.dto.NotificationDto;
 import com.example.DoroServer.domain.notification.entity.Notification;
 import com.example.DoroServer.domain.notification.entity.NotificationType;
 import com.example.DoroServer.domain.notification.repository.NotificationRepository;
+import com.example.DoroServer.domain.token.entity.Token;
 import com.example.DoroServer.domain.token.repository.TokenRepository;
 import com.example.DoroServer.domain.user.entity.User;
 import com.example.DoroServer.domain.user.repository.UserRepository;
@@ -37,6 +39,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -266,6 +269,10 @@ public class NotificationService {
                                                                                 .build())
                                                                         .build())
                                                         .build())
+                                        .data(Data.builder()
+                                                .id(notificationReq.getId())
+                                                .notiType(notificationType.name())
+                                                .build())
                                         .build())
                         .validateOnly(false)
                         .build();

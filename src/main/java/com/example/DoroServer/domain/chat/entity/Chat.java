@@ -17,7 +17,7 @@ import java.util.List;
 public class Chat extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "chat_id")
     private Long id; // PK
 

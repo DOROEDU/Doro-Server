@@ -12,13 +12,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @ToString
 @Getter
 @NoArgsConstructor
-@Builder
-@AllArgsConstructor
 public class CreateLectureReq {
 
     @NotBlank
