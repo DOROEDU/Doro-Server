@@ -10,9 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Getter
 @Builder
 @NoArgsConstructor
@@ -23,13 +20,11 @@ public class FindMyLecturesRes {
     private String subTitle;
     private LectureStatus status;
     private LectureDate lectureDate;
-    private List<LocalDate> lectureDates;
     private String city;
     private String place;
     private String time;
     private TutorRole tutorRole;
     private TutorStatus tutorStatus;
-    private Long lectureId;
 
 
 

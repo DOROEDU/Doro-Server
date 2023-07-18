@@ -1,10 +1,8 @@
 package com.example.DoroServer.domain.announcement.entity;
 
-import com.example.DoroServer.domain.announcement.dto.AnnouncementMultipartReq;
 import com.example.DoroServer.domain.announcement.dto.AnnouncementReq;
 import com.example.DoroServer.domain.announcement.dto.AnnouncementRes;
 import com.example.DoroServer.domain.base.BaseEntity;
-import javax.persistence.GenerationType;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -22,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class Announcement extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "announcement_id")
     private Long id; //PK
 
@@ -52,9 +50,8 @@ public class Announcement extends BaseEntity {
 
     // Announcement 수정 메소드
     // Picture는 따로 Update
-    public void update(AnnouncementMultipartReq announcementMultipartReq, String imgUrl) {
-        this.title = announcementMultipartReq.getTitle();
-        this.body = announcementMultipartReq.getBody();
-        this.picture = imgUrl;
+    public void update(AnnouncementReq announcementReq) {
+        this.title = announcementReq.getTitle();
+        this.body = announcementReq.getBody();
     }
 }

@@ -26,17 +26,6 @@ public interface UserLectureRepository extends JpaRepository<UserLecture, Long> 
 
     @Query(value =
             "select ul from UserLecture ul "
-                    + "join ul.lecture l "
-                    + "join fetch ul.user "
-                    + "where l.id = :lectureId and (ul.tutorStatus = 'ASSIGNED' or ul.user.id=:userId)"
-    )
-    List<UserLecture> findAllAssignedTutors(
-            @Param("lectureId") Long lectureId,
-            @Param("userId") Long userId
-            );
-
-    @Query(value =
-            "select ul from UserLecture ul "
                     + "join ul.user u "
                     + "join fetch ul.lecture "
                     + "where u.id = :id"
@@ -52,12 +41,10 @@ public interface UserLectureRepository extends JpaRepository<UserLecture, Long> 
                     + "ul.tutorRole = :tutorRole "
 
     )
-    Optional<UserLecture> findUserLecture(
+    Optional<UserLecture> findUerLecture(
             @Param("lectureId") Long lectureId,
             @Param("userId") Long userId,
             @Param("tutorRole") TutorRole tutorRole
     );
     void deleteAllByUser(User user);
-
-    void deleteAllByLecture(Lecture lecture);
 }
