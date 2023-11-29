@@ -23,5 +23,5 @@ public class EducationApplicationRes {
     private String studentRank;
     private int budget;
     private String overallRemark;
-    private List<ClassGroupRes> classInfos;
+    private List<ClassGroupRes> ClassGroups;
 }

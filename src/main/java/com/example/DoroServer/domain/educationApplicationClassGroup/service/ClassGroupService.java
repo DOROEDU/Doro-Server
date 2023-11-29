@@ -23,11 +23,11 @@ public class ClassGroupService {
     /* Class Group */
 
     // create
-    public ClassGroupRes addClassGroupToApplication(Long id, ClassGroupReq classInfoReq) {
-        EducationApplication educationApplication = educationApplicationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 교육 신청서가 없습니다. id=" + id));
+    public ClassGroupRes addClassGroupToApplication(Long applicationId, ClassGroupReq classGroupReq) {
+        EducationApplication educationApplication = educationApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 교육 신청서가 없습니다. applicationId=" + applicationId));
 
-        ClassGroup classGroup = mapper.toEntity(classInfoReq);
+        ClassGroup classGroup = mapper.toEntity(classGroupReq);
         classGroup.setEducationApplication(educationApplication);
         ClassGroup savedClassGroup = classGroupRepository.save(classGroup);
 
@@ -35,23 +35,23 @@ public class ClassGroupService {
     }
 
     // update
-    public ClassGroupRes updateClassGroup(Long id, Long classInfoId, ClassGroupReq classInfoReq) {
-        ClassGroup target = classGroupRepository.findById(classInfoId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 교육 학급 정보가 없습니다. id=" + classInfoId));
+    public ClassGroupRes updateClassGroup(Long id, Long classGroupId, ClassGroupReq classGroupReq) {
+        ClassGroup target = classGroupRepository.findById(classGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 교육 학급 정보가 없습니다. id=" + classGroupId));
 
-        mapper.toEntity(classInfoReq, target);
-        ClassGroup updatedClassInfo = classGroupRepository.save(target);
+        mapper.toEntity(classGroupReq, target);
+        ClassGroup updatedClassGroup = classGroupRepository.save(target);
 
-        return mapper.toDTO(updatedClassInfo);
+        return mapper.toDTO(updatedClassGroup);
     }
 
     // delete
-    public void deleteClassGroup(Long id, Long classInfoId) {
-        ClassGroup classGroup = classGroupRepository.findById(classInfoId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 교육 학급 정보가 없습니다. id=" + classInfoId));
+    public void deleteClassGroup(Long id, Long classGroupId) {
+        ClassGroup classGroup = classGroupRepository.findById(classGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 교육 학급 정보가 없습니다. id=" + classGroupId));
         classGroup.getEducationApplication().getId().equals(id);
 
-        classGroupRepository.deleteById(classInfoId);
+        classGroupRepository.deleteById(classGroupId);
     }
 
 }

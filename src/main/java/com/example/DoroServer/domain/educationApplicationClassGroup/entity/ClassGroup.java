@@ -42,7 +42,7 @@ public class ClassGroup { // extends BaseEntity
 
     // == 연관관계 매핑 ==//
 
-    // ClassInformation은 EducationApplication은 다대일(Many-to-One) 관계
+    // ClassGroup은 EducationApplication은 다대일(Many-to-One) 관계
     @ManyToOne
     @JoinColumn(name = "application_id")
     private EducationApplication educationApplication; // 교육 신청서

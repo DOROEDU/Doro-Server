@@ -45,9 +45,9 @@ public class EducationApplication { // extends BaseEntity
 
     // == 연관관계 매핑 ==//
 
-    // EducationApplication과 ClassInformation은 일대다(One-to-Many) 관계
+    // EducationApplication과 ClassGroup은 일대다(One-to-Many) 관계
     @Builder.Default
     @OneToMany(mappedBy = "educationApplication", cascade = CascadeType.REMOVE)
-    private List<ClassGroup> classInfos = new ArrayList<>(); // 교육 학급 정보
+    private List<ClassGroup> classGroups = new ArrayList<>(); // 교육 학급 정보
 
 }
