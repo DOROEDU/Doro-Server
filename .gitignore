@@ -46,3 +46,5 @@ jacoco/
 
 kanu-keystore.p12
 
+### MacOS ###
+.DS_Store
