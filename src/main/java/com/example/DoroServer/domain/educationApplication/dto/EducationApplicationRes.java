@@ -6,9 +6,11 @@ import com.example.DoroServer.domain.educationApplicationClassGroup.dto.ClassGro
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class EducationApplicationRes {
@@ -23,5 +25,5 @@ public class EducationApplicationRes {
     private String studentRank;
     private int budget;
     private String overallRemark;
-    private List<ClassGroupRes> ClassGroups;
+    private List<ClassGroupRes> classGroups;
 }
