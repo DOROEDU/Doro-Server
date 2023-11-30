@@ -9,6 +9,8 @@ import com.example.DoroServer.domain.educationApplicationClassGroup.dto.ClassGro
 import com.example.DoroServer.domain.educationApplicationClassGroup.dto.ClassGroupRes;
 import com.example.DoroServer.domain.educationApplicationClassGroup.entity.ClassGroup;
 import com.example.DoroServer.domain.educationApplicationClassGroup.repository.ClassGroupRepository;
+import com.example.DoroServer.global.exception.BaseException;
+import com.example.DoroServer.global.exception.Code;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +27,7 @@ public class ClassGroupService {
     // create
     public ClassGroupRes addClassGroupToApplication(Long applicationId, ClassGroupReq classGroupReq) {
         EducationApplication educationApplication = educationApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 교육 신청서가 없습니다. applicationId=" + applicationId));
+                .orElseThrow(() -> new BaseException(Code.EDUCATION_APPLICATION_NOT_FOUND));
 
         ClassGroup classGroup = mapper.toEntity(classGroupReq);
         classGroup.setEducationApplication(educationApplication);
@@ -37,7 +39,7 @@ public class ClassGroupService {
     // update
     public ClassGroupRes updateClassGroup(Long id, Long classGroupId, ClassGroupReq classGroupReq) {
         ClassGroup target = classGroupRepository.findById(classGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 교육 학급 정보가 없습니다. id=" + classGroupId));
+                .orElseThrow(() -> new BaseException(Code.EDUCATION_CLASS_GROUP_NOT_FOUND));
 
         mapper.toEntity(classGroupReq, target);
         ClassGroup updatedClassGroup = classGroupRepository.save(target);
@@ -48,7 +50,7 @@ public class ClassGroupService {
     // delete
     public void deleteClassGroup(Long id, Long classGroupId) {
         ClassGroup classGroup = classGroupRepository.findById(classGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 교육 학급 정보가 없습니다. id=" + classGroupId));
+                .orElseThrow(() -> new BaseException(Code.EDUCATION_CLASS_GROUP_NOT_FOUND));
         classGroup.getEducationApplication().getId().equals(id);
 
         classGroupRepository.deleteById(classGroupId);

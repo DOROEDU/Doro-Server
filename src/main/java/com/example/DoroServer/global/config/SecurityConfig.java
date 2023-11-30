@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true)
-public class SecurityConfig{
+public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final CorsConfig corsConfig;
@@ -34,11 +34,10 @@ public class SecurityConfig{
         return new BCryptPasswordEncoder();
     }
 
-
     // 필터를 거치지 않는 요청
     // csrf로부터 보호받지 못한다. - 필터 체인 무시와 트레이드 오프
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(){
+    public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 .antMatchers(
                         "/favicon.ico",
@@ -51,6 +50,7 @@ public class SecurityConfig{
                         "/check/phone",
                         "/find/account",
                         "/change/password",
+                        "/apply/education/**",
                         "/",
                         "/swagger-ui.html",
                         "/v3/api-docs/**",
@@ -58,6 +58,7 @@ public class SecurityConfig{
                         "/swagger-resources/**",
                         "/docs/**");
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -69,7 +70,7 @@ public class SecurityConfig{
                 .logoutSuccessHandler(jwtLogoutSuccessHandler)
                 .and()
 
-                /**401, 403 Exception 핸들링 */
+                /** 401, 403 Exception 핸들링 */
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -84,7 +85,8 @@ public class SecurityConfig{
 
                 .and()
                 .addFilter(corsConfig.corsFilter())
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService),
+                        UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtAuthenticationExceptionHandler(), JwtAuthenticationFilter.class);
         return http.build();
     }

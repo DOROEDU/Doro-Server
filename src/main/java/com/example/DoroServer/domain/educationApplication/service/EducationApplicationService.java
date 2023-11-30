@@ -10,6 +10,8 @@ import com.example.DoroServer.domain.educationApplication.dto.EducationApplicati
 import com.example.DoroServer.domain.educationApplication.dto.RetrieveApplicationReq;
 import com.example.DoroServer.domain.educationApplication.entity.EducationApplication;
 import com.example.DoroServer.domain.educationApplication.repository.EducationApplicationRepository;
+import com.example.DoroServer.global.exception.BaseException;
+import com.example.DoroServer.global.exception.Code;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,13 +33,6 @@ public class EducationApplicationService {
     }
 
     // read
-    public EducationApplicationRes findById(Long id) {
-        EducationApplication educationApplication = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 교육 신청서가 없습니다. id=" + id));
-
-        return mapper.toDTO(educationApplication);
-    }
-
     public List<EducationApplicationRes> findByPhoneNumber(RetrieveApplicationReq retrieveApplicationReq) {
         List<EducationApplication> educationApplications = repository
                 .findByPhoneNumber(retrieveApplicationReq.getPhoneNumber());
@@ -48,7 +43,7 @@ public class EducationApplicationService {
     // update
     public EducationApplicationRes update(Long id, EducationApplicationReq applicationReq) {
         EducationApplication educationApplication = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 교육 신청서가 없습니다. id=" + id));
+                .orElseThrow(() -> new BaseException(Code.EDUCATION_APPLICATION_NOT_FOUND));
 
         mapper.toEntity(applicationReq, educationApplication);
         EducationApplication updatedEducationApplication = repository.save(educationApplication);
