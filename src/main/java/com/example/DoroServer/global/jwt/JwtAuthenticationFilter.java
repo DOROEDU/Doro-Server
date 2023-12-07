@@ -3,6 +3,8 @@ package com.example.DoroServer.global.jwt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Slf4j
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
@@ -23,13 +26,14 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final RedisService redisService;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String jwtToken = jwtTokenProvider.resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
         if (StringUtils.hasText(jwtToken) && jwtTokenProvider.validateToken(jwtToken)) {
-            if(redisService.getValues(jwtToken) == null) {
+            if (redisService.getValues(jwtToken) == null) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
@@ -37,7 +41,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         } else {
             log.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
         }
-
 
         chain.doFilter(request, response);
     }

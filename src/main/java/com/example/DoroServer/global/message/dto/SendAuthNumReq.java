@@ -14,7 +14,7 @@ public class SendAuthNumReq {
     @NotNull
     private MessageType messageType;
 
-    public enum MessageType{
-        JOIN, ACCOUNT, PASSWORD, UPDATE
+    public enum MessageType {
+        JOIN, ACCOUNT, PASSWORD, UPDATE, TEMP // TEMP는 교육 신청시 사용
     }
 }

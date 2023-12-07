@@ -12,7 +12,7 @@ public class EducationApplicationTestSetup {
     public static Long ID = 1L;
     public static String NAME = "홍길동";
     public static String UPDATED_NAME = "고길동";
-    public static String PHONE_NUMBER = "010-1234-5678";
+    public static String PHONE_NUMBER = "01012345678";
     public static String INSTITUTION_NAME = "냉장고등학교";
     public static String POSITION = "교장선생님";
     public static String UPDATED_POSITION = "교감선생님";

@@ -4,18 +4,11 @@ import com.example.DoroServer.domain.base.BaseEntity;
 
 import com.example.DoroServer.domain.token.entity.Token;
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.Collection;
 import com.example.DoroServer.domain.chat.entity.Chat;
@@ -71,6 +64,7 @@ public class User extends BaseEntity implements UserDetails {
 
     private String profileImg; // 사용자 이미
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Token> tokens = new ArrayList<>(); // 사용자 보유 FCM 토큰
 
@@ -128,7 +122,7 @@ public class User extends BaseEntity implements UserDetails {
         this.generation = generation;
     }
 
-    public void updateBirth(LocalDate birth){
+    public void updateBirth(LocalDate birth) {
         this.birth = birth;
     }
 
@@ -136,7 +130,7 @@ public class User extends BaseEntity implements UserDetails {
         this.phone = phone;
     }
 
-    public void toInactive(){
+    public void toInactive() {
         this.isActive = false;
     }
 
