@@ -1,6 +1,5 @@
 package com.example.DoroServer.global.s3;
 
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -19,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class AwsS3ServiceImpl implements AwsS3Service{
+public class AwsS3ServiceImpl implements AwsS3Service {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -30,8 +29,8 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     private final AmazonS3Client amazonS3Client;
 
     @Override
-    public String upload(MultipartFile multipartFile, String dirName){
-        String fileName = dirName+"/"+ UUID.randomUUID() + ".jpg";
+    public String upload(MultipartFile multipartFile, String dirName) {
+        String fileName = dirName + "/" + UUID.randomUUID() + ".jpg";
         if (multipartFile.isEmpty()) {
             throw new BaseException(Code.BAD_REQUEST);
         }
@@ -45,7 +44,7 @@ public class AwsS3ServiceImpl implements AwsS3Service{
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, byteArrayInputStream, objectMetadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
             throw new BaseException(Code.UPLOAD_FAILED);
         }
@@ -55,12 +54,24 @@ public class AwsS3ServiceImpl implements AwsS3Service{
 
     @Override
     public void deleteImage(String fileName) {
-        int index=fileName.indexOf(url);
-        String fileRoute=fileName.substring(index + url.length()+1);
+        int index = fileName.indexOf(url);
+        String fileRoute = fileName.substring(index + url.length() + 1);
         try {
             boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, fileRoute);
             if (isObjectExist) {
-                amazonS3Client.deleteObject(bucket,fileRoute);
+                amazonS3Client.deleteObject(bucket, fileRoute);
+            }
+        } catch (Exception e) {
+            throw new BaseException(Code.BAD_REQUEST);
+        }
+    }
+
+    public void deleteImage2(String fileName) {
+        String objectName = "lecture-content/" + fileName; // BUCKET_FOLDER/UUID.jpg
+        try {
+            boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, objectName);
+            if (isObjectExist) {
+                amazonS3Client.deleteObject(bucket, objectName);
             }
         } catch (Exception e) {
             throw new BaseException(Code.BAD_REQUEST);

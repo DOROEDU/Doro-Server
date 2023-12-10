@@ -21,11 +21,11 @@ public class ContentImageS3ServiceImpl implements ContentImageS3Service {
 
     void validate(MultipartFile[] files) {
         if (files == null) {
-            // Multipart가 한 개라도 배열에 넣어서 요청해야함
+            // Multipart가 1개라도 배열에 넣어서 요청해야함
             throw new BaseException(Code.JSON_SYNTAX_ERROR);
         }
-        if (files.length > 100) {
-            throw new BaseException(Code.LECTURE_CONTENT_IMAGE_COUNT_OVER);
+        if (files.length > 100 || files.length < 1) {
+            throw new BaseException(Code.LECTURE_CONTENT_INVAILD_IMAGE_COUNT);
         }
         for (MultipartFile file : files) {
             if (file.getSize() > 10485760) { // 10MB
@@ -36,7 +36,7 @@ public class ContentImageS3ServiceImpl implements ContentImageS3Service {
 
     String getFileNameFrom(String url) {
         // UUID(36자) + .jpg(4자) = 파일명(40자)
-        return url.substring(40);
+        return url.substring(url.length() - 40);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ContentImageS3ServiceImpl implements ContentImageS3Service {
     public void deleteS3Image(LectureContentImage lectureContentImage) {
         String uploadedUrl = lectureContentImage.getUrl();
         String fileName = getFileNameFrom(uploadedUrl);
-        awsS3Service.deleteImage(fileName);
+        awsS3Service.deleteImage2(fileName);
     }
 
 }
