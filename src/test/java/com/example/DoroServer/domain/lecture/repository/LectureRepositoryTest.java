@@ -45,7 +45,7 @@ class LectureRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        lectureContent = LectureContent.builder().kit("테스트 키트").detail("세부사항").requirement("고졸").build();
+        lectureContent = LectureContent.builder().kit("테스트 키트").detail("세부사항").requirement("고졸").content("컨텐츠").build();
         lectureContentRepository.save(lectureContent);
     }
 
