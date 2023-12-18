@@ -25,8 +25,10 @@ public class ClassGroupService {
     /* Class Group */
 
     // create
-    public ClassGroupRes addClassGroupToApplication(Long applicationId, ClassGroupReq classGroupReq) {
-        EducationApplication educationApplication = educationApplicationRepository.findById(applicationId)
+    public ClassGroupRes addClassGroupToApplication(Long applicationId, ClassGroupReq classGroupReq,
+            String phoneNumber) {
+        EducationApplication educationApplication = educationApplicationRepository
+                .findByIdAndPhoneNumber(applicationId, phoneNumber)
                 .orElseThrow(() -> new BaseException(Code.EDUCATION_APPLICATION_NOT_FOUND));
 
         ClassGroup classGroup = mapper.toEntity(classGroupReq);
@@ -37,21 +39,33 @@ public class ClassGroupService {
     }
 
     // update
-    public ClassGroupRes updateClassGroup(Long id, Long classGroupId, ClassGroupReq classGroupReq) {
-        ClassGroup target = classGroupRepository.findById(classGroupId)
+    public ClassGroupRes updateClassGroup(Long applicationId, Long classGroupId, ClassGroupReq classGroupReq,
+            String phoneNumber) {
+        EducationApplication educationApplication = educationApplicationRepository
+                .findByIdAndPhoneNumber(applicationId, phoneNumber)
+                .orElseThrow(() -> new BaseException(Code.EDUCATION_APPLICATION_NOT_FOUND));
+
+        ClassGroup classGroup = educationApplication.getClassGroups().stream()
+                .filter(group -> group.getId().equals(classGroupId))
+                .findFirst()
                 .orElseThrow(() -> new BaseException(Code.EDUCATION_CLASS_GROUP_NOT_FOUND));
 
-        mapper.toEntity(classGroupReq, target);
-        ClassGroup updatedClassGroup = classGroupRepository.save(target);
+        mapper.toEntity(classGroupReq, classGroup);
+        ClassGroup updatedClassGroup = classGroupRepository.save(classGroup);
 
         return mapper.toDTO(updatedClassGroup);
     }
 
     // delete
-    public void deleteClassGroup(Long id, Long classGroupId) {
-        ClassGroup classGroup = classGroupRepository.findById(classGroupId)
+    public void deleteClassGroup(Long applicationId, Long classGroupId, String phoneNumber) {
+        EducationApplication educationApplication = educationApplicationRepository
+                .findByIdAndPhoneNumber(applicationId, phoneNumber)
+                .orElseThrow(() -> new BaseException(Code.EDUCATION_APPLICATION_NOT_FOUND));
+
+        educationApplication.getClassGroups().stream()
+                .filter(group -> group.getId().equals(classGroupId))
+                .findFirst()
                 .orElseThrow(() -> new BaseException(Code.EDUCATION_CLASS_GROUP_NOT_FOUND));
-        classGroup.getEducationApplication().getId().equals(id);
 
         classGroupRepository.deleteById(classGroupId);
     }

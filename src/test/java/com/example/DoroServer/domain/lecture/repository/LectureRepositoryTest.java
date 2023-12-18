@@ -1,7 +1,10 @@
 package com.example.DoroServer.domain.lecture.repository;
 
+import java.util.Arrays;
+import java.util.Collections;
 import com.example.DoroServer.domain.lecture.entity.Lecture;
 import com.example.DoroServer.domain.lectureContent.entity.LectureContent;
+import com.example.DoroServer.domain.lectureContent.repository.LectureContentRepository;
 import com.example.DoroServer.global.config.QueryDslConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,27 +29,39 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({ QueryDslConfig.class })
 class LectureRepositoryTest {
 
     @Autowired
     LectureRepository lectureRepository;
 
+    @Autowired
+    LectureContentRepository lectureContentRepository;
+
     @PersistenceContext
     EntityManager em;
 
+    LectureContent lectureContent;
+
+    @BeforeEach
+    void setUp() {
+        lectureContent = LectureContent.builder().kit("테스트 키트").detail("세부사항").requirement("고졸").content("컨텐츠").build();
+        lectureContentRepository.save(lectureContent);
+    }
 
     @DisplayName("findLectureById_Success_Test")
     @Test
     void findLectureByIdTest() {
         // given
-        LectureContent lectureContent = LectureContent.builder().id(1L).build();
         Lecture lecture = Lecture.builder()
+                .mainTitle("강의 제목")
                 .lectureContent(lectureContent)
                 .build();
         Lecture saved = lectureRepository.save(lecture);
+
         // when
         Optional<Lecture> optionalLecture = lectureRepository.findLectureById(saved.getId());
+
         // then
         assertThat(em.getEntityManagerFactory().getPersistenceUnitUtil()
                 .isLoaded(optionalLecture.get().getLectureContent())).isTrue();
@@ -56,39 +71,23 @@ class LectureRepositoryTest {
     @Test
     void findLecturesByFinishedDateTest() {
         // given
-        LectureContent lectureContent = LectureContent.builder().id(1L).build();
-
-        ArrayList<ArrayList<LocalDate>> localDatesList = new ArrayList<>();
-
-        ArrayList<LocalDate> localDates = new ArrayList<>();
-        localDates.add(LocalDate.of(2023,10,10));
-        localDates.add(LocalDate.of(2023,10,11));
-
-
-        ArrayList<LocalDate> localDates2 = new ArrayList<>();
-        localDates2.add(LocalDate.of(2023,10,10));
-        localDates2.add(LocalDate.of(2023,10,9));
-
-        ArrayList<LocalDate> localDates3 = new ArrayList<>();
-        localDates3.add(LocalDate.of(2023,10,10));
-
-
-        localDatesList.add(localDates);
-        localDatesList.add(localDates2);
-        localDatesList.add(localDates3);
-
-        for(ArrayList<LocalDate> inputList  :  localDatesList){
-            Lecture lecture1 = Lecture.builder()
+        List<List<LocalDate>> localDatesList = Arrays.asList(
+                Arrays.asList(LocalDate.of(2023, 10, 10), LocalDate.of(2023, 10, 11)),
+                Arrays.asList(LocalDate.of(2023, 10, 10), LocalDate.of(2023, 10, 9)),
+                Collections.singletonList(LocalDate.of(2023, 10, 10)));
+        for (List<LocalDate> inputList : localDatesList) {
+            Lecture lecture = Lecture.builder()
                     .lectureDates(inputList)
                     .lectureContent(lectureContent)
                     .build();
-            Lecture saved = lectureRepository.save(lecture1);
+            lectureRepository.save(lecture);
         }
-        Integer finishedLecturesCount=2;
+        Integer finishedLecturesCount = 2;
+        LocalDate finishedDate = LocalDate.of(2023, 10, 10);
 
-        LocalDate finishedDate=LocalDate.of(2023, 10, 10);
         // when
         List<Lecture> lecturesByFinishedDate = lectureRepository.findLecturesByFinishedDate(finishedDate);
+
         // then
         assertThat(lecturesByFinishedDate.size()).isEqualTo(finishedLecturesCount);
     }

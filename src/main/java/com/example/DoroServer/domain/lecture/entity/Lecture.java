@@ -50,19 +50,20 @@ public class Lecture extends BaseEntity {
 
     private String staff; // 강의 스태프 수
 
-    private String mainPayment; //강사 급여
+    private String mainPayment; // 강사 급여
 
     private String subPayment;
 
     private String staffPayment;
 
-    private String transportCost;//교통비
+    private String transportCost;// 교통비
 
     private String time; // 시간
 
     private String remark; // 강의 기타 사항
 
-    @ElementCollection()
+    @Builder.Default
+    @ElementCollection
     @CollectionTable(name = "lecture_date", joinColumns = @JoinColumn(name = "lecture_id"))
     private List<LocalDate> lectureDates = new ArrayList<>(); // 강의 날짜
 
@@ -72,7 +73,7 @@ public class Lecture extends BaseEntity {
     @Embedded
     private LectureDate lectureDate; // 강의 날짜 관련 [enrollStateDate, enrollEndDate]
 
-    //== 연관관계 매핑 ==//
+    // == 연관관계 매핑 ==//
 
     // Lecture와 LectureContent는 다대일(Many-to-One) 관계
     @ManyToOne(fetch = LAZY)
@@ -88,8 +89,8 @@ public class Lecture extends BaseEntity {
         this.lectureContent = lectureContent;
     }
 
-    public void changeLectureStatus(LectureStatus lectureStatus){
-        this.status=lectureStatus;
+    public void changeLectureStatus(LectureStatus lectureStatus) {
+        this.status = lectureStatus;
     }
 
 }

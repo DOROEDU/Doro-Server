@@ -1,5 +1,7 @@
 package com.example.DoroServer.global.config;
 
+import com.example.DoroServer.domain.educationApplication.api.SessionFilter;
+import com.example.DoroServer.domain.educationApplication.api.SessionFilterHandler;
 import com.example.DoroServer.global.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -50,7 +52,6 @@ public class SecurityConfig {
                         "/check/phone",
                         "/find/account",
                         "/change/password",
-                        "/education-application/**",
                         "/",
                         "/swagger-ui.html",
                         "/v3/api-docs/**",
@@ -82,10 +83,13 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests()
+                .antMatchers("/education-application/**").permitAll() // 훚대폰 인증 세션 필터 적용
                 .anyRequest().authenticated()
 
                 .and()
                 .addFilter(corsConfig.corsFilter())
+                .addFilterBefore(new SessionFilter(redisService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new SessionFilterHandler(), SessionFilter.class)
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService),
                         UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtAuthenticationExceptionHandler(), JwtAuthenticationFilter.class);

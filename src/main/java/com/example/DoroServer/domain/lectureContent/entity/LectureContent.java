@@ -3,11 +3,17 @@ package com.example.DoroServer.domain.lectureContent.entity;
 import javax.persistence.GenerationType;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.OneToMany;
+
+import com.example.DoroServer.domain.lectureContentImage.entity.LectureContentImage;
 
 @Entity
 @Getter
@@ -27,5 +33,13 @@ public class LectureContent {
 
     private String requirement; // 강의 자격 요건
 
-    private String content;
+    private String content; // 강의 컨텐츠
+
+    // == 연관관계 매핑 ==//
+
+    // LectureContent과 LectureContentImage는 일대다(One-to-Many) 관계
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<LectureContentImage> images = new ArrayList<>();
+
 }

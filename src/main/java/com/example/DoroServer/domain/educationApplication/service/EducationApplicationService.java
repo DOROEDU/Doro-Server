@@ -25,7 +25,9 @@ public class EducationApplicationService {
     /* Education Application */
 
     // create
-    public EducationApplicationRes save(EducationApplicationReq applicationReq) {
+    public EducationApplicationRes save(EducationApplicationReq applicationReq, String phoneNumber) {
+        throwExceptionIfNotEqual(applicationReq.getPhoneNumber(), phoneNumber);
+
         EducationApplication educationApplication = mapper.toEntity(applicationReq);
         EducationApplication savedEducationApplication = repository.save(educationApplication);
 
@@ -33,17 +35,21 @@ public class EducationApplicationService {
     }
 
     // read
-    public List<EducationApplicationRes> findByPhoneNumber(RetrieveApplicationReq retrieveApplicationReq) {
-        List<EducationApplication> educationApplications = repository
-                .findByPhoneNumber(retrieveApplicationReq.getPhoneNumber());
+    public List<EducationApplicationRes> findByPhoneNumber(RetrieveApplicationReq retrieveApplicationReq,
+            String phoneNumber) {
+        throwExceptionIfNotEqual(retrieveApplicationReq.getPhoneNumber(), phoneNumber);
+
+        List<EducationApplication> educationApplications = repository.findByPhoneNumber(phoneNumber);
 
         return mapper.toDTO(educationApplications);
     }
 
     // update
-    public EducationApplicationRes update(Long id, EducationApplicationReq applicationReq) {
-        EducationApplication educationApplication = repository.findById(id)
-                .orElseThrow(() -> new BaseException(Code.EDUCATION_APPLICATION_NOT_FOUND));
+    public EducationApplicationRes update(Long id, EducationApplicationReq applicationReq, String phoneNumber) {
+        throwExceptionIfNotEqual(applicationReq.getPhoneNumber(), phoneNumber);
+
+        EducationApplication educationApplication = repository.findByIdAndPhoneNumber(id, phoneNumber).orElseThrow(
+                () -> new BaseException(Code.EDUCATION_APPLICATION_NOT_FOUND));
 
         mapper.toEntity(applicationReq, educationApplication);
         EducationApplication updatedEducationApplication = repository.save(educationApplication);
@@ -52,8 +58,18 @@ public class EducationApplicationService {
     }
 
     // delete
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public void delete(Long id, String phoneNumber) {
+        EducationApplication educationApplication = repository.findByIdAndPhoneNumber(id, phoneNumber).orElseThrow(
+                () -> new BaseException(Code.EDUCATION_APPLICATION_NOT_FOUND));
+
+        repository.delete(educationApplication);
+    }
+
+    public static void throwExceptionIfNotEqual(String phoneNumber1, String phoneNumber2) {
+        // 두 번호가 같지 않으면 예외 발생
+        if (!phoneNumber2.equals(phoneNumber1)) {
+            throw new BaseException(Code.EDUCATION_APPLICATION_DIFFERENT_PHONE);
+        }
     }
 
 }

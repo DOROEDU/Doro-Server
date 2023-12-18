@@ -3,7 +3,6 @@ package com.example.DoroServer.domain.lecture.dto;
 import com.example.DoroServer.domain.lecture.entity.Lecture;
 import com.example.DoroServer.domain.lecture.entity.LectureDate;
 import com.example.DoroServer.domain.lecture.entity.LectureStatus;
-import com.example.DoroServer.domain.lectureContent.dto.LectureContentDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class CreateLectureReq {
     @NotBlank
     private String staff; // 강의 스태프 수
     @NotBlank
-    private String mainPayment; //강사 급여
+    private String mainPayment; // 강사 급여
     @NotBlank
     private String subPayment;
     @NotBlank
@@ -61,6 +60,8 @@ public class CreateLectureReq {
     private String time; // 시간
     @NotBlank
     private String remark;
+
+    @Builder.Default
     @NotNull
     private List<LocalDate> lectureDates = new ArrayList<>(); // 강의 날짜
     @NotNull

@@ -4,6 +4,8 @@ import com.example.DoroServer.domain.lecture.entity.Lecture;
 import com.example.DoroServer.domain.lecture.entity.LectureDate;
 import com.example.DoroServer.domain.lecture.entity.LectureStatus;
 import com.example.DoroServer.domain.lecture.repository.LectureRepository;
+import com.example.DoroServer.domain.notification.dto.NotificationContentReq;
+import com.example.DoroServer.domain.notification.service.NotificationServiceRefact;
 import com.example.DoroServer.domain.user.entity.Degree;
 import com.example.DoroServer.domain.user.entity.Gender;
 import com.example.DoroServer.domain.user.entity.StudentStatus;
@@ -23,7 +25,6 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 class UserLectureServiceTest {
@@ -51,11 +51,13 @@ class UserLectureServiceTest {
     @Mock
     private LectureRepository lectureRepository;
 
+    @Mock
+    private NotificationServiceRefact notificationService;
+
     @Spy
     private UserLectureMapper userLectureMapper = Mappers.getMapper(UserLectureMapper.class);
 
-
-    private User setUpUser(Long userId){
+    private User setUpUser(Long userId) {
         return User.builder()
                 .id(userId)
                 .name("name")
@@ -73,7 +75,7 @@ class UserLectureServiceTest {
                 .build();
     }
 
-    private Lecture setUpLecture(Long lectureId){
+    private Lecture setUpLecture(Long lectureId) {
         ArrayList<LocalDate> dates = new ArrayList<>();
         LocalDate now = LocalDate.now();
         dates.add(now);
@@ -103,11 +105,11 @@ class UserLectureServiceTest {
                 .build();
     }
 
-    private UserLecture setUpUserLecture(Long userLectureId){
-        Long userId=3L;
+    private UserLecture setUpUserLecture(Long userLectureId) {
+        Long userId = 3L;
         User user = setUpUser(userId);
 
-        Long lectureId=2L;
+        Long lectureId = 2L;
         Lecture lecture = setUpLecture(lectureId);
 
         return UserLecture.builder()
@@ -119,21 +121,21 @@ class UserLectureServiceTest {
                 .build();
     }
 
-    private List<UserLecture> setUpUserLectureList(int length){
+    private List<UserLecture> setUpUserLectureList(int length) {
         ArrayList<UserLecture> userLectureArrayList = new ArrayList<>();
-        for(int i=0;i<length;i++){
+        for (int i = 0; i < length; i++) {
             UserLecture userLecture = setUpUserLecture((long) i);
             userLectureArrayList.add(userLecture);
         }
         return userLectureArrayList;
     }
 
-    private FindAllTutorsRes setUpFindAllTutorsRes(){
+    private FindAllTutorsRes setUpFindAllTutorsRes() {
         return FindAllTutorsRes.builder()
                 .build();
     }
 
-    private FindMyLecturesRes setUpFindMyLectures(){
+    private FindMyLecturesRes setUpFindMyLectures() {
         return FindMyLecturesRes.builder().build();
     }
 
@@ -141,11 +143,12 @@ class UserLectureServiceTest {
     @Test
     void createTutorDuplicateTutorExceptionTest() {
         // given
-        Long userLectureId=5L;
+        Long userLectureId = 5L;
         UserLecture userLecture = setUpUserLecture(userLectureId);
-        given(userLectureRepository.findUserLecture(any(Long.class),any(Long.class),any(TutorRole.class))).willReturn(Optional.of(userLecture));
+        given(userLectureRepository.findUserLecture(any(Long.class), any(Long.class), any(TutorRole.class)))
+                .willReturn(Optional.of(userLecture));
 
-        Long lectureId=1L;
+        Long lectureId = 1L;
         CreateTutorReq createTutorReq = CreateTutorReq.builder()
                 .userId(1L)
                 .tutorRole(TutorRole.SUB_TUTOR)
@@ -163,10 +166,11 @@ class UserLectureServiceTest {
     @Test
     void createTutorNoLectureExceptionTest() {
         // given
-        given(userLectureRepository.findUserLecture(any(Long.class),any(Long.class),any(TutorRole.class))).willReturn(Optional.empty());
+        given(userLectureRepository.findUserLecture(any(Long.class), any(Long.class), any(TutorRole.class)))
+                .willReturn(Optional.empty());
         given(lectureRepository.findById(any(Long.class))).willReturn(Optional.empty());
 
-        Long lectureId=1L;
+        Long lectureId = 1L;
         CreateTutorReq createTutorReq = CreateTutorReq.builder()
                 .userId(1L)
                 .tutorRole(TutorRole.SUB_TUTOR)
@@ -184,11 +188,12 @@ class UserLectureServiceTest {
     @Test
     void createTutorNoUserExceptionTest() {
         // given
-        given(userLectureRepository.findUserLecture(any(Long.class),any(Long.class),any(TutorRole.class))).willReturn(Optional.empty());
+        given(userLectureRepository.findUserLecture(any(Long.class), any(Long.class), any(TutorRole.class)))
+                .willReturn(Optional.empty());
         given(userRepository.findById(any(Long.class))).willReturn(Optional.empty());
         given(lectureRepository.findById(any(Long.class))).willReturn(Optional.of(Lecture.builder().build()));
 
-        Long lectureId=1L;
+        Long lectureId = 1L;
         CreateTutorReq createTutorReq = CreateTutorReq.builder()
                 .userId(1L)
                 .tutorRole(TutorRole.SUB_TUTOR)
@@ -206,9 +211,10 @@ class UserLectureServiceTest {
     @Test
     void createTutorTest() {
         // given
-        given(userLectureRepository.findUserLecture(any(Long.class),any(Long.class),any(TutorRole.class))).willReturn(Optional.empty());
+        given(userLectureRepository.findUserLecture(any(Long.class), any(Long.class), any(TutorRole.class)))
+                .willReturn(Optional.empty());
 
-        Long userLectureId=4L;
+        Long userLectureId = 4L;
         UserLecture userLecture = setUpUserLecture(userLectureId);
 
         given(userRepository.findById(any(Long.class))).willReturn(Optional.of(userLecture.getUser()));
@@ -217,17 +223,17 @@ class UserLectureServiceTest {
 
         given(userLectureRepository.save(any(UserLecture.class))).willReturn(userLecture);
 
-        Long lectureId=1L;
+        Long lectureId = 1L;
         CreateTutorReq createTutorReq = CreateTutorReq.builder()
                 .userId(1L)
                 .tutorRole(TutorRole.SUB_TUTOR)
                 .build();
         // when
-        userLectureService.createTutor(lectureId,createTutorReq);
+        userLectureService.createTutor(lectureId, createTutorReq);
         // then
-        verify(lectureRepository,times(1)).findById(any(Long.class));
-        verify(userRepository,times(1)).findById(any(Long.class));
-        verify(userLectureRepository,times(1)).save(any(UserLecture.class));
+        verify(lectureRepository, times(1)).findById(any(Long.class));
+        verify(userRepository, times(1)).findById(any(Long.class));
+        verify(userLectureRepository, times(1)).save(any(UserLecture.class));
 
     }
 
@@ -251,17 +257,18 @@ class UserLectureServiceTest {
     @Test
     void findAllTutorsTest() {
         // given
-        int userLectureCount=3;
+        int userLectureCount = 3;
         List<UserLecture> userLectures = setUpUserLectureList(userLectureCount);
         given(userLectureRepository.findAllTutors(any(Long.class))).willReturn(userLectures);
 
         FindAllTutorsRes findAllTutorsRes = setUpFindAllTutorsRes();
-        given(userLectureMapper.toFindAllTutorsRes(any(UserLecture.class),any(User.class))).willReturn(findAllTutorsRes);
+        given(userLectureMapper.toFindAllTutorsRes(any(UserLecture.class), any(User.class)))
+                .willReturn(findAllTutorsRes);
         // when
-        Long lectureId=3L;
+        Long lectureId = 3L;
         List<FindAllTutorsRes> allTutors = userLectureService.findAllTutors(lectureId);
         // then
-        verify(userLectureRepository,times(1)).findAllTutors(any(Long.class));
+        verify(userLectureRepository, times(1)).findAllTutors(any(Long.class));
         assertThat(allTutors.size()).isEqualTo(userLectureCount);
     }
 
@@ -269,11 +276,12 @@ class UserLectureServiceTest {
     @Test
     void findMyLecturesMapperTest() throws IllegalAccessException {
         // given
-        Long userLectureId=4L;
+        Long userLectureId = 4L;
         UserLecture userLecture = setUpUserLecture(userLectureId);
 
         // when
-        FindMyLecturesRes findMyLecturesRes = userLectureMapper.toFindMyLecturesRes(userLecture.getLecture(), userLecture);
+        FindMyLecturesRes findMyLecturesRes = userLectureMapper.toFindMyLecturesRes(userLecture.getLecture(),
+                userLecture);
         // then
         for (Field field : findMyLecturesRes.getClass().getDeclaredFields()) {
             field.setAccessible(true);
@@ -292,14 +300,15 @@ class UserLectureServiceTest {
         given(userLectureRepository.findMyLectures(any(Long.class))).willReturn(userLectures);
 
         FindMyLecturesRes findMyLecturesRes = setUpFindMyLectures();
-        given(userLectureMapper.toFindMyLecturesRes(any(Lecture.class),any(UserLecture.class))).willReturn(findMyLecturesRes);
+        given(userLectureMapper.toFindMyLecturesRes(any(Lecture.class), any(UserLecture.class)))
+                .willReturn(findMyLecturesRes);
 
         // when
-        Long userId=4L;
+        Long userId = 4L;
         List<FindMyLecturesRes> myLectures = userLectureService.findMyLectures(userId);
 
         // then
-        verify(userLectureRepository,times(1)).findMyLectures(any(Long.class));
+        verify(userLectureRepository, times(1)).findMyLectures(any(Long.class));
         assertThat(myLectures.size()).isEqualTo(userLectureCount);
 
     }
@@ -308,8 +317,8 @@ class UserLectureServiceTest {
     @Test
     void selectTutorNoTutorExceptionTest() {
         // given
-        given(userLectureRepository.findUserLecture(any(Long.class),any(Long.class),any(TutorRole.class))).willReturn(Optional.empty());
-
+        given(userLectureRepository.findUserLecture(any(Long.class), any(Long.class), any(TutorRole.class)))
+                .willReturn(Optional.empty());
 
         Long lectureId = 1L;
         SelectTutorReq selectTutorReq = SelectTutorReq.builder()
@@ -329,9 +338,10 @@ class UserLectureServiceTest {
     @Test
     void selectTutorNoUserExceptionTest() {
         // given
-        Long userLectureId=4L;
+        Long userLectureId = 4L;
         UserLecture userLecture = setUpUserLecture(userLectureId);
-        given(userLectureRepository.findUserLecture(any(Long.class),any(Long.class),any(TutorRole.class))).willReturn(Optional.of(userLecture));
+        given(userLectureRepository.findUserLecture(any(Long.class), any(Long.class), any(TutorRole.class)))
+                .willReturn(Optional.of(userLecture));
 
         given(userRepository.findById(any(Long.class))).willReturn(Optional.empty());
         Long lectureId = 1L;
@@ -352,9 +362,10 @@ class UserLectureServiceTest {
     @Test
     void selectTutorNoLectureExceptionTest() {
         // given
-        Long userLectureId=4L;
+        Long userLectureId = 4L;
         UserLecture userLecture = setUpUserLecture(userLectureId);
-        given(userLectureRepository.findUserLecture(any(Long.class),any(Long.class),any(TutorRole.class))).willReturn(Optional.of(userLecture));
+        given(userLectureRepository.findUserLecture(any(Long.class), any(Long.class), any(TutorRole.class)))
+                .willReturn(Optional.of(userLecture));
 
         given(userRepository.findById(any(Long.class))).willReturn(Optional.of(userLecture.getUser()));
         given(lectureRepository.findById(any(Long.class))).willReturn(Optional.empty());
@@ -378,18 +389,22 @@ class UserLectureServiceTest {
     @Test
     void selectTutorTest() {
         // given
-        Long userLectureId=4L;
+        Long userLectureId = 4L;
         UserLecture userLecture = setUpUserLecture(userLectureId);
-        given(userLectureRepository.findUserLecture(any(Long.class),any(Long.class),any(TutorRole.class))).willReturn(Optional.of(userLecture));
+        given(userLectureRepository.findUserLecture(any(Long.class), any(Long.class), any(TutorRole.class)))
+                .willReturn(Optional.of(userLecture));
 
-        Long userId=3L;
+        Long userId = 3L;
         User user = setUpUser(userId);
         given(userRepository.findById(any(Long.class))).willReturn(Optional.of(user));
 
-        Long lectureId=4L;
+        Long lectureId = 4L;
         Lecture lecture = setUpLecture(lectureId);
         given(lectureRepository.findById(any(Long.class))).willReturn(Optional.of(lecture));
 
+        given(notificationService.sendNotificationToOne(any(Long.class), any(Long.class),
+                any(NotificationContentReq.class)))
+                .willReturn(userId);
 
         SelectTutorReq selectTutorReq = SelectTutorReq.builder()
                 .userId(userId)
@@ -397,21 +412,22 @@ class UserLectureServiceTest {
                 .build();
 
         // when
-        userLectureService.selectTutor(lectureId,selectTutorReq);
+        userLectureService.selectTutor(lectureId, selectTutorReq);
+
         // then
         assertThat(userLecture.getTutorStatus()).isEqualTo(TutorStatus.ASSIGNED);
     }
 
-//    @DisplayName("강의 신청 취소 테스트")
-//    @Test
-//    void deleteLectureTest() {
-//        // given
-//        doNothing().when(userLectureRepository).deleteById(any(Long.class));
-//        // when
-//        Long userLectureId=1L;
-//        userLectureService.deleteUserLecture(userLectureId,);
-//        // then
-//        verify(userLectureRepository,times(1)).deleteById(any(Long.class));
-//
-//    }
+    // @DisplayName("강의 신청 취소 테스트")
+    // @Test
+    // void deleteLectureTest() {
+    // // given
+    // doNothing().when(userLectureRepository).deleteById(any(Long.class));
+    // // when
+    // Long userLectureId=1L;
+    // userLectureService.deleteUserLecture(userLectureId,);
+    // // then
+    // verify(userLectureRepository,times(1)).deleteById(any(Long.class));
+    //
+    // }
 }
